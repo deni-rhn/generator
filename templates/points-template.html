@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            font-size: 36px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .left-panel {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .points-mail-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .revenue-header {
+            background: linear-gradient(135deg, #1abc9c, #16a085);
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .main-table th {
+            background: #3498db;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #2980b9;
+        }
+
+        .main-table td {
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .main-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .total-row {
+            background-color: #ecf0f1 !important;
+            font-weight: bold;
+        }
+
+        .attendance-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .attendance-header {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .attendance-table th {
+            background: #b19cd9;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #9b59b6;
+        }
+
+        .attendance-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .attendance-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .grand-total-row {
+            background-color: #3498db !important;
+            color: white;
+            font-weight: bold;
+        }
+
+        .staff-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .staff-table th {
+            background: #34495e;
+            color: white;
+            padding: 8px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #2c3e50;
+        }
+
+        .staff-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .staff-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .number-cell {
+            text-align: right;
+            font-family: monospace;
+        }
+
+        .footer-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: #34495e;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .generated-at {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">{{title}}</div>
+    
+    <div class="container">
+        <div class="left-panel">
+            <div class="points-mail-header">Poins Mall</div>
+            <div class="revenue-header">Revenue</div>
+            
+            <table class="main-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Type</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each revenue}}
+                    <tr>
+                        <td>{{this.date}}</td>
+                        <td>{{this.items}}</td>
+                        <td>{{this.type}}</td>
+                        <td class="number-cell">{{formatNumber this.total}}</td>
+                    </tr>
+                    {{/each}}
+                    <tr class="total-row">
+                        <td colspan="3"><strong>Total</strong></td>
+                        <td class="number-cell"><strong>{{formatNumber revenueTotal}}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="right-panel">
+            <div class="attendance-table">
+                <div class="attendance-header">Class Schedule</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Class Date</th>
+                            <th>No. of Session Daily</th>
+                            <th>No. of Student Attend</th>
+                            <th>No. of Student Missed Class</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each attendance}}
+                        <tr>
+                            <td>{{this.date}}</td>
+                            <td>{{this.sessions}}</td>
+                            <td>{{this.attended}}</td>
+                            <td>{{this.missed}}</td>
+                        </tr>
+                        {{/each}}
+                        <tr class="grand-total-row">
+                            <td><strong>Grand total</strong></td>
+                            <td><strong>{{attendanceTotals.sessions}}</strong></td>
+                            <td><strong>{{attendanceTotals.attended}}</strong></td>
+                            <td><strong>{{attendanceTotals.missed}}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="staff-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Name</th>
+                            <th>Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each staff}}
+                        <tr>
+                            <td>{{this.role}}</td>
+                            <td>{{this.name}}</td>
+                            <td>{{this.count}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-info">
+        <div>Register Premium: {{statistics.registerPremium}}</div>
+        <div>Waiting Class & Do: {{statistics.waitingClass}}</div>
+        <div>Cancel: {{statistics.cancel}}</div>
+        <div>Total Student: {{statistics.totalStudent}}</div>
+    </div>
+
+    <div class="generated-at">
+        Generated: {{formatDate generatedAt}}
+    </div>
+</body>
+</html>
