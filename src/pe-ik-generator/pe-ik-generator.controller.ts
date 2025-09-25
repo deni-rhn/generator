@@ -16,25 +16,30 @@ interface SentResponse {
 
 @Controller('pe-ik-generator')
 export class PeIkGeneratorController {
-  private readonly walisCode = [
-    '001',
-    '002',
-    '003',
-    '004',
-    '005',
-    '006',
-    '007',
-    '008',
-    '009',
-    '010',
-    '011',
-    '012',
-    '013',
-    '014',
-    '015',
+  private readonly kodeKelurahans = [
+    '3174051003', '3174051002', '3174051001',
+    '3174051004', '3174051005', '3174051006',
   ];
-  private readonly firstNames = ['Alan', 'Sinta', 'Budi', 'Ayu', 'Rizky', 'Putri', 'Bagus', 'Prasetya'];
-  private readonly lastNames  = ['Prasetya', 'Maharani', 'Santoso', 'Putri', 'Maulana', 'Hidayat', 'Pratama', 'Lestari'];
+  private readonly guardianData = [
+    { code: "001", name: "ayah" },
+    { code: "002", name: "ibu" },
+    { code: "003", name: "kakek" },
+    { code: "004", name: "nenek" },
+    { code: "005", name: "famili lain" },
+    { code: "006", name: "anak" },
+    { code: "007", name: "adik" },
+    { code: "008", name: "kakak" },
+    { code: "009", name: "suami" },
+    { code: "010", name: "istri" },
+    { code: "011", name: "cucu" },
+    { code: "012", name: "menantu" },
+    { code: "013", name: "mertua" },
+    { code: "014", name: "teman" },
+    { code: "015", name: "sdm kesehatan" }
+  ];
+
+  private readonly firstNames = ['Alan', 'Sinta', 'Budi', 'Ayu', 'Rizky', 'Putri', 'Bagus', 'Prasetya', 'Budi', 'Lamto', 'Surono', 'Marina', 'Dewi', 'Joko', 'Sari'];
+  private readonly lastNames  = ['Prasetya', 'Maharani', 'Santoso', 'Putri', 'Maulana', 'Hidayat', 'Pratama', 'Lestari', 'Indo', 'Raharjo', 'Saputra'];
   private randomItem<T>(arr: T[]): T {
     return arr[Math.floor(Math.random() * arr.length)];
   }
@@ -45,6 +50,21 @@ export class PeIkGeneratorController {
       start.getTime() + Math.random() * (end.getTime() - start.getTime());
     return new Date(t).toISOString().slice(0, 10);
   }
+
+  private getAgeFromRandomDate(dobStr: string): number {
+    const dob = new Date(dobStr);
+    const today = new Date();
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    const dayDiff = today.getDate() - dob.getDate();
+
+    // Adjust if birthday hasn’t happened yet this year
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--;
+    }
+    return age;
+  }
   private randomFullName(): string {
     return `${this.randomItem(this.firstNames)} ${this.randomItem(this.lastNames)} ${this.randomItem(this.firstNames)}`;
   }
@@ -52,6 +72,13 @@ export class PeIkGeneratorController {
     return Array.from({ length: len }, () =>
       Math.floor(Math.random() * 10),
     ).join('');
+  }
+
+  private getRandomGuardian(returnValue: 'code' | 'name') {
+    const randomIndex = Math.floor(Math.random() * this.guardianData.length);
+    const { code, name } = this.guardianData[randomIndex];
+    if (returnValue === 'code') return code;
+    return name;
   }
 
   constructor(
@@ -63,10 +90,14 @@ export class PeIkGeneratorController {
   async generate(
     @Body() dto: GeneratePayloadDto,
   ): Promise<{ sent: SentResponse[], count: number }> {
-    const payloads = this.service.generate(dto.count, dto.unique);
+    const payloads = this.service.generate(
+      dto.count,
+      dto.unique,
+      dto.isHaveWalis,
+    );
 
-    const targetUrl = 'https://asik-be.sesasi.xyz/v1/api/patient/encryption';
-    const postUrl = 'https://asik-be.sesasi.xyz/v1/api/patient/registration';
+    const targetUrl = 'https://asik-be-p2.sesasi.xyz/v1/api/patient/encryption';
+    const postUrl = 'https://asik-be-p2.sesasi.xyz/v1/api/patient/registration';
     const encryptedPayloads: EncryptedPayload[] = [];
     const sentResponses: SentResponse[] = []; // Fixed type
 
@@ -88,12 +119,32 @@ export class PeIkGeneratorController {
     };
 
     const walis = {
-      jenis_kelamin: '1',
+      jenis_kelamin: this.randomItem(['1', '2']),
       name: this.randomFullName(),
       nik: nextNik(),
       no_handphone: nextPhone(),
-      relasi_code: this.randomItem(this.walisCode),
+      relasi_code: this.getRandomGuardian('code'),
       tgl_lahir: this.randomDate(),
+      relasi_name: this.getRandomGuardian('name'),
+      umur: this.getAgeFromRandomDate(this.randomDate()),
+      kode_pekerjaan: 'pensiunan',
+      pekerjaan: 'Pensiunan',
+    };
+
+    const walis_domicile = {
+      alamat: 'Jl. Gandaria I No.10',
+      kode_kecamatan: '317405',
+      kode_kelurahan: this.randomItem(this.kodeKelurahans),
+      kode_kota: '3174',
+      kode_pos: '12140',
+      kode_provinsi: '31',
+      nama_kecamatan: 'Kebayoran Baru',
+      nama_kelurahan: 'Gandaria Utara',
+      nama_kota: 'Jakarta Selatan',
+      nama_provinsi: 'DKI Jakarta',
+      negara: 'Indonesia',
+      rt: '003',
+      rw: '005',
     };
 
     for (const payload of payloads) {
@@ -106,6 +157,9 @@ export class PeIkGeneratorController {
           ...payload.data,
           wali: {
             ...walis,
+          },
+          domisili_wali: {
+            ...walis_domicile,
           },
         },
       };
