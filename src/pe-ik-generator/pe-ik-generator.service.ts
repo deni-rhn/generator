@@ -5,9 +5,13 @@ import { randomUUID } from 'crypto';
 @Injectable()
 export class PeIkGeneratorService {
   private readonly channels = ['ssp', 'ckg', 'siha', 'sitb', 'sismal'];
-  private readonly kodeKelurahans = [
-    '3174051003', '3174051002', '3174051001',
-    '3174051004', '3174051005', '3174051006',
+  private readonly kelurahans = [
+    { code: '3174051003', name: 'Cipulir' },
+    { code: '3174051002', name: 'Pondok Pinang' },
+    { code: '3174051001', name: 'Kebayoran Lama Utara' },
+    { code: '3174051004', name: 'Grogol Utara' },
+    { code: '3174051005', name: 'Grogol Selatan' },
+    { code: '3174051006', name: 'Kebayoran Lama Selatan' },
   ];
   private readonly firstNames = ['Alan', 'Sinta', 'Budi', 'Ayu', 'Rizky', 'Putri', 'Bagus', 'Prasetya', 'Maulana', 'Dewi', 'Eka', 'Surya', 'Nanda', 'Citra', 'Galih', 'Amru', 'Fajri', 'Denis', 'Aziz', , 'Budi', 'Lamto', 'Surono', 'Marina', 'Dewi', 'Joko', 'Sari'];
   private readonly lastNames  = ['Prasetya', 'Maharani', 'Santoso', 'Putri', 'Maulana', 'Kurniawan', 'Wibowo', 'Wijaya', 'Rahmawati', 'Saputra', 'Siregar', 'Ananda', 'Hidayat', 'Pratama', 'Lestari', 'Mandiri', 'Indo', 'Raharjo', 'Saputra'];
@@ -68,6 +72,13 @@ export class PeIkGeneratorService {
   private getRandomClasters(returnValue: 'code' | 'name') {
     const randomIndex = Math.floor(Math.random() * this.clasters.length);
     const { code, name } = this.clasters[randomIndex];
+    if (returnValue === 'code') return code;
+    return name;
+  }
+
+  private getRandomKelurahan(returnValue: 'code' | 'name') {
+    const randomIndex = Math.floor(Math.random() * this.kelurahans.length);
+    const { code, name } = this.kelurahans[randomIndex];
     if (returnValue === 'code') return code;
     return name;
   }
@@ -144,13 +155,13 @@ export class PeIkGeneratorService {
           domisili_pasien: {
             alamat: 'Jl. Gandaria I No.10',
             kode_kecamatan: '317405',
-            kode_kelurahan: this.randomItem(this.kodeKelurahans),
+            kode_kelurahan: this.getRandomKelurahan('code'),
             kode_kota: '3174',
             kode_pos: '12140',
             kode_provinsi: '31',
-            nama_kecamatan: 'Kebayoran Baru',
-            nama_kelurahan: 'Gandaria Utara',
-            nama_kota: 'Jakarta Selatan',
+            nama_kecamatan: 'Kebayoran Lama',
+            nama_kelurahan: this.getRandomKelurahan('name'),
+            nama_kota: 'Kota Adm. Jakarta Selatan',
             nama_provinsi: 'DKI Jakarta',
             negara: 'Indonesia',
             rt: '003',

@@ -16,30 +16,62 @@ interface SentResponse {
 
 @Controller('pe-ik-generator')
 export class PeIkGeneratorController {
-  private readonly kodeKelurahans = [
-    '3174051003', '3174051002', '3174051001',
-    '3174051004', '3174051005', '3174051006',
+  private readonly kelurahans = [
+    { code: '3174051003', name: 'Cipulir' },
+    { code: '3174051002', name: 'Pondok Pinang' },
+    { code: '3174051001', name: 'Kebayoran Lama Utara' },
+    { code: '3174051004', name: 'Grogol Utara' },
+    { code: '3174051005', name: 'Grogol Selatan' },
+    { code: '3174051006', name: 'Kebayoran Lama Selatan' },
   ];
   private readonly guardianData = [
-    { code: "001", name: "ayah" },
-    { code: "002", name: "ibu" },
-    { code: "003", name: "kakek" },
-    { code: "004", name: "nenek" },
-    { code: "005", name: "famili lain" },
-    { code: "006", name: "anak" },
-    { code: "007", name: "adik" },
-    { code: "008", name: "kakak" },
-    { code: "009", name: "suami" },
-    { code: "010", name: "istri" },
-    { code: "011", name: "cucu" },
-    { code: "012", name: "menantu" },
-    { code: "013", name: "mertua" },
-    { code: "014", name: "teman" },
-    { code: "015", name: "sdm kesehatan" }
+    { code: '001', name: 'ayah' },
+    { code: '002', name: 'ibu' },
+    { code: '003', name: 'kakek' },
+    { code: '004', name: 'nenek' },
+    { code: '005', name: 'famili lain' },
+    { code: '006', name: 'anak' },
+    { code: '007', name: 'adik' },
+    { code: '008', name: 'kakak' },
+    { code: '009', name: 'suami' },
+    { code: '010', name: 'istri' },
+    { code: '011', name: 'cucu' },
+    { code: '012', name: 'menantu' },
+    { code: '013', name: 'mertua' },
+    { code: '014', name: 'teman' },
+    { code: '015', name: 'sdm kesehatan' },
   ];
 
-  private readonly firstNames = ['Alan', 'Sinta', 'Budi', 'Ayu', 'Rizky', 'Putri', 'Bagus', 'Prasetya', 'Budi', 'Lamto', 'Surono', 'Marina', 'Dewi', 'Joko', 'Sari'];
-  private readonly lastNames  = ['Prasetya', 'Maharani', 'Santoso', 'Putri', 'Maulana', 'Hidayat', 'Pratama', 'Lestari', 'Indo', 'Raharjo', 'Saputra'];
+  private readonly firstNames = [
+    'Alan',
+    'Sinta',
+    'Budi',
+    'Ayu',
+    'Rizky',
+    'Putri',
+    'Bagus',
+    'Prasetya',
+    'Budi',
+    'Lamto',
+    'Surono',
+    'Marina',
+    'Dewi',
+    'Joko',
+    'Sari',
+  ];
+  private readonly lastNames = [
+    'Prasetya',
+    'Maharani',
+    'Santoso',
+    'Putri',
+    'Maulana',
+    'Hidayat',
+    'Pratama',
+    'Lestari',
+    'Indo',
+    'Raharjo',
+    'Saputra',
+  ];
   private randomItem<T>(arr: T[]): T {
     return arr[Math.floor(Math.random() * arr.length)];
   }
@@ -73,6 +105,12 @@ export class PeIkGeneratorController {
       Math.floor(Math.random() * 10),
     ).join('');
   }
+  private getRandomKelurahan(returnValue: 'code' | 'name') {
+    const randomIndex = Math.floor(Math.random() * this.kelurahans.length);
+    const { code, name } = this.kelurahans[randomIndex];
+    if (returnValue === 'code') return code;
+    return name;
+  }
 
   private getRandomGuardian(returnValue: 'code' | 'name') {
     const randomIndex = Math.floor(Math.random() * this.guardianData.length);
@@ -89,7 +127,7 @@ export class PeIkGeneratorController {
   @Post('generate')
   async generate(
     @Body() dto: GeneratePayloadDto,
-  ): Promise<{ sent: SentResponse[], count: number }> {
+  ): Promise<{ sent: SentResponse[]; count: number }> {
     const payloads = this.service.generate(
       dto.count,
       dto.unique,
@@ -134,12 +172,12 @@ export class PeIkGeneratorController {
     const walis_domicile = {
       alamat: 'Jl. Gandaria I No.10',
       kode_kecamatan: '317405',
-      kode_kelurahan: this.randomItem(this.kodeKelurahans),
+      kode_kelurahan: this.getRandomKelurahan('code'),
       kode_kota: '3174',
       kode_pos: '12140',
       kode_provinsi: '31',
       nama_kecamatan: 'Kebayoran Baru',
-      nama_kelurahan: 'Gandaria Utara',
+      nama_kelurahan: this.getRandomKelurahan('name'),
       nama_kota: 'Jakarta Selatan',
       nama_provinsi: 'DKI Jakarta',
       negara: 'Indonesia',
