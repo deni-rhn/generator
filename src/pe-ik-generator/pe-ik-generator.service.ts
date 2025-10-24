@@ -6,14 +6,36 @@ import { randomUUID } from 'crypto';
 export class PeIkGeneratorService {
   private readonly channels = ['ssp', 'ckg', 'siha', 'sitb', 'sismal'];
   private readonly klasterCodes = ['TB-001', 'TB-002', 'TB-003', 'TB-004', 'TB-005'];
-  // private readonly kelurahans = [
-  //   { code: '3174051003', name: 'Cipulir' },
-  //   { code: '3174051002', name: 'Pondok Pinang' },
-  //   { code: '3174051001', name: 'Kebayoran Lama Utara' },
-  //   { code: '3174051004', name: 'Grogol Utara' },
-  //   { code: '3174051005', name: 'Grogol Selatan' },
-  //   { code: '3174051006', name: 'Kebayoran Lama Selatan' },
-  // ];
+  private readonly kelurahans = [
+      {
+          name: "Bukit Duri",
+          code: "3174011005"
+      },
+      {
+          name: "Kebon Baru",
+          code: "3174011004"
+      },
+      {
+          name: "Manggarai",
+          code: "3174011007"
+      },
+      {
+          name: "Manggarai Selatan",
+          code: "3174011006"
+      },
+      {
+          name: "Menteng Dalam",
+          code: "3174011003"
+      },
+      {
+          name: "Tebet Barat",
+          code: "3174011002"
+      },
+      {
+          name: "Tebet Timur",
+          code: "3174011001"
+      }
+    ]
   private readonly firstNames = [
     "Bagas", "Citra", "Tiara", "Hanif", "Yudha", "Larasati", "Mega", "Ajeng", "Sekar", "Fajar",
     "Cahya", "Raditya", "Ratri", "Larasati", "Citra", "Galuh", "Damar", "Rizky", "Bayu", "Ajeng",
@@ -34,58 +56,58 @@ export class PeIkGeneratorService {
     "Handayani", "Nugroho", "Putra", "Wijaya", "Saputra", "Susanto", "Rahmawati", "Asmoro", "Widodo", "Dewantoro",
     "Permadi", "Rochmat", "Kusuma", "Saputra", "Wijaya", "Lestari", "Utami", "Asmoro", "Wijaya", "Adiwarna"
   ];
-  private readonly kelurahans = [
-      {
-          name: "Bugelan",
-          code: "3312162003",
-          parent_code: "331216"
-      },
-      {
-          name: "Gambiranom",
-          code: "3312162009",
-          parent_code: "331216"
-      },
-      {
-          name: "Gedawung",
-          code: "3312162010",
-          parent_code: "331216"
-      },
-      {
-          name: "Gesing",
-          code: "3312161008",
-          parent_code: "331216"
-      },
-      {
-          name: "Kismantoro",
-          code: "3312161005",
-          parent_code: "331216"
-      },
-      {
-          name: "Lemahbang",
-          code: "3312162007",
-          parent_code: "331216"
-      },
-      {
-          name: "Miri",
-          code: "3312162006",
-          parent_code: "331216"
-      },
-      {
-          name: "Ngroto",
-          code: "3312162004",
-          parent_code: "331216"
-      },
-      {
-          name: "Plosorejo",
-          code: "3312162002",
-          parent_code: "331216"
-      },
-      {
-          name: "Pucung",
-          code: "3312162001",
-          parent_code: "331216"
-      }
-  ];
+  // private readonly kelurahans = [
+  //     {
+  //         name: "Bugelan",
+  //         code: "3312162003",
+  //         parent_code: "331216"
+  //     },
+  //     {
+  //         name: "Gambiranom",
+  //         code: "3312162009",
+  //         parent_code: "331216"
+  //     },
+  //     {
+  //         name: "Gedawung",
+  //         code: "3312162010",
+  //         parent_code: "331216"
+  //     },
+  //     {
+  //         name: "Gesing",
+  //         code: "3312161008",
+  //         parent_code: "331216"
+  //     },
+  //     {
+  //         name: "Kismantoro",
+  //         code: "3312161005",
+  //         parent_code: "331216"
+  //     },
+  //     {
+  //         name: "Lemahbang",
+  //         code: "3312162007",
+  //         parent_code: "331216"
+  //     },
+  //     {
+  //         name: "Miri",
+  //         code: "3312162006",
+  //         parent_code: "331216"
+  //     },
+  //     {
+  //         name: "Ngroto",
+  //         code: "3312162004",
+  //         parent_code: "331216"
+  //     },
+  //     {
+  //         name: "Plosorejo",
+  //         code: "3312162002",
+  //         parent_code: "331216"
+  //     },
+  //     {
+  //         name: "Pucung",
+  //         code: "3312162001",
+  //         parent_code: "331216"
+  //     }
+  // ];
   // private readonly kelurahans = [
   //       {
   //           name: "Doloduo",
@@ -595,7 +617,7 @@ export class PeIkGeneratorService {
   }
 
   private randomFullName(): string {
-    return `${this.randomItem(this.firstNames)} ${this.randomItem(this.lastNames)} ${this.randomItem(this.firstNames)} ${this.randomItem(this.firstNames)} ${this.randomItem(this.firstNames)} ${this.randomItem(this.firstNames)}`;
+    return `${this.randomItem(this.firstNames)} ${this.randomItem(this.lastNames)}`;
   }
 
   generate(count: number, unique = false) {
@@ -630,22 +652,22 @@ export class PeIkGeneratorService {
         trace_id: randomUUID(),
         data: {
           domisili_pasien: {
-            alamat: 'Kismantoro No. 10',
-            kode_kecamatan: '331216',
+            alamat: 'Jl. Gandaria I No.10',
+            kode_kecamatan: '317401',
             kode_kelurahan: this.getRandomKelurahan('code'),
-            kode_kota: '3312',
-            kode_pos: '57696',
+            kode_kota: '3174',
+            kode_pos: '12140',
             kode_provinsi: '31',
-            nama_kecamatan: 'Kismantoro',
+            nama_kecamatan: 'Tebet',
             nama_kelurahan: this.getRandomKelurahan('name'),
-            nama_kota: 'Kab. Wonogiri',
-            nama_provinsi: 'Jawa Tengah',
+            nama_kota: 'Kota Administrasi Jakarta Selatan',
+            nama_provinsi: 'DKI Jakarta',
             negara: 'Indonesia',
             rt: '003',
             rw: '005',
           },
           faskes_asal_satusehat_code: '1000156689',
-          faskes_satusehat_code: '1001518262',
+          faskes_satusehat_code: '1000098394',
           id_registrasi: idReg,
           klaster_code: this.randomItem(this.klasterCodes),
           no_tiket: this.ticket('TCT', 7),
@@ -785,6 +807,23 @@ export class PeIkGeneratorService {
 //             nama_kelurahan: this.getRandomKelurahan('name'),
 //             nama_kota: 'Kota Semarang',
 //             nama_provinsi: 'Jawa Tengah',
+//             negara: 'Indonesia',
+//             rt: '003',
+//             rw: '005',
+//           }
+
+// tebet 
+// domisili_pasien: {
+//             alamat: 'Jl. Gandaria I No.10',
+//             kode_kecamatan: '317401',
+//             kode_kelurahan: this.getRandomKelurahan('code'),
+//             kode_kota: '3174',
+//             kode_pos: '12140',
+//             kode_provinsi: '31',
+//             nama_kecamatan: 'Tebet',
+//             nama_kelurahan: this.getRandomKelurahan('name'),
+//             nama_kota: 'Kota Administrasi Jakarta Selatan',
+//             nama_provinsi: 'DKI Jakarta',
 //             negara: 'Indonesia',
 //             rt: '003',
 //             rw: '005',

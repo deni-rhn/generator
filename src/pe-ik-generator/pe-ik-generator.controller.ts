@@ -65,8 +65,8 @@ export class PeIkGeneratorController {
   ): Promise<{ sent: SentResponse[], count: number }> {
     const payloads = this.service.generate(dto.count, dto.unique);
 
-    const targetUrl = 'https://api-dev.dto.kemkes.go.id/asik-pe-ik/v1/api/patient/encryption';
-    const postUrl = 'https://api-dev.dto.kemkes.go.id/asik-pe-ik/v1/api/patient/registration';
+    const targetUrl = 'https://api-stg.dto.kemkes.go.id/asik-pe-ik/v1/api/patient/encryption';
+    const postUrl = 'https://api-stg.dto.kemkes.go.id/asik-pe-ik/v1/api/patient/registration';
     // const targetUrl = 'https://asik-be.sesasi.xyz/v1/api/patient/encryption';
     // const postUrl = 'https://asik-be.sesasi.xyz/v1/api/patient/registration';
     const encryptedPayloads: EncryptedPayload[] = [];
