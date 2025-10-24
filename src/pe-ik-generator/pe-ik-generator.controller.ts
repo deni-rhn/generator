@@ -16,14 +16,6 @@ interface SentResponse {
 
 @Controller('pe-ik-generator')
 export class PeIkGeneratorController {
-  private readonly kelurahans = [
-    { code: '3174051003', name: 'Cipulir' },
-    { code: '3174051002', name: 'Pondok Pinang' },
-    { code: '3174051001', name: 'Kebayoran Lama Utara' },
-    { code: '3174051004', name: 'Grogol Utara' },
-    { code: '3174051005', name: 'Grogol Selatan' },
-    { code: '3174051006', name: 'Kebayoran Lama Selatan' },
-  ];
   private readonly guardianData = [
     { code: '001', name: 'ayah' },
     { code: '002', name: 'ibu' },
@@ -43,34 +35,25 @@ export class PeIkGeneratorController {
   ];
 
   private readonly firstNames = [
-    'Alan',
-    'Sinta',
-    'Budi',
-    'Ayu',
-    'Rizky',
-    'Putri',
-    'Bagus',
-    'Prasetya',
-    'Budi',
-    'Lamto',
-    'Surono',
-    'Marina',
-    'Dewi',
-    'Joko',
-    'Sari',
+    "Bagas", "Citra", "Tiara", "Hanif", "Yudha", "Larasati", "Mega", "Ajeng", "Sekar", "Fajar",
+    "Cahya", "Raditya", "Ratri", "Larasati", "Citra", "Galuh", "Damar", "Rizky", "Bayu", "Ajeng",
+    "Dyah", "Tiara", "Arga", "Mega", "Wulan", "Ningrum", "Pandu", "Anindya", "Agung", "Lukman",
+    "Galuh", "Surya", "Teguh", "Endah", "Yudha", "Tiara", "Wulan", "Damar", "Sinta", "Fajar",
+    "Hanif", "Ratri", "Mega", "Raditya", "Wisnu", "Bayu", "Retno", "Sinta", "Bagas", "Jatmiko",
+    "Citra", "Larasati", "Raka", "Sekar", "Agung", "Teguh", "Dyah", "Ajeng", "Cahya", "Retno",
+    "Bimo", "Surya", "Lukman", "Satrio", "Sri", "Ningrum", "Pandu", "Anindya", "Wisnu", "Intan",
+    "Yudha", "Mega", "Tiara", "Damar", "Citra", "Endah", "Fajar", "Bayu", "Agung", "Hanif"
   ];
+
   private readonly lastNames = [
-    'Prasetya',
-    'Maharani',
-    'Santoso',
-    'Putri',
-    'Maulana',
-    'Hidayat',
-    'Pratama',
-    'Lestari',
-    'Indo',
-    'Raharjo',
-    'Saputra',
+    "Wijaya", "Putra", "Saputra", "Ningrum", "Melati", "Utami", "Wijaya", "Adiwarna", "Yulianto", "Kusuma",
+    "Santosa", "Wijaya", "Rochmat", "Asmoro", "Saputra", "Puspita", "Nugroho", "Lestari", "Melati", "Pertiwi",
+    "Suryaningsih", "Subroto", "Saputra", "Iskandar", "Rahmawati", "Nugroho", "Pangestu", "Wijaya", "Hardjono", "Puspita",
+    "Putra", "Wijaya", "Yulianto", "Harjanti", "Rochmat", "Wulandari", "Asmoro", "Dewantoro", "Lestari", "Permadi",
+    "Adiwarna", "Susanto", "Saputra", "Wijaya", "Wulandari", "Utami", "Handayani", "Putra", "Prasetya", "Pranata",
+    "Wulandari", "Ningrum", "Yulianto", "Puspita", "Wijanarko", "Iskandar", "Melati", "Cahyaningtyas", "Suryaningsih", "Wijaya",
+    "Handayani", "Nugroho", "Putra", "Wijaya", "Saputra", "Susanto", "Rahmawati", "Asmoro", "Widodo", "Dewantoro",
+    "Permadi", "Rochmat", "Kusuma", "Saputra", "Wijaya", "Lestari", "Utami", "Asmoro", "Wijaya", "Adiwarna"
   ];
   private randomItem<T>(arr: T[]): T {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -104,12 +87,6 @@ export class PeIkGeneratorController {
     return Array.from({ length: len }, () =>
       Math.floor(Math.random() * 10),
     ).join('');
-  }
-  private getRandomKelurahan(returnValue: 'code' | 'name') {
-    const randomIndex = Math.floor(Math.random() * this.kelurahans.length);
-    const { code, name } = this.kelurahans[randomIndex];
-    if (returnValue === 'code') return code;
-    return name;
   }
 
   private getRandomGuardian(returnValue: 'code' | 'name') {
@@ -163,41 +140,20 @@ export class PeIkGeneratorController {
       no_handphone: nextPhone(),
       relasi_code: this.getRandomGuardian('code'),
       tgl_lahir: this.randomDate(),
-      relasi_name: this.getRandomGuardian('name'),
       umur: this.getAgeFromRandomDate(this.randomDate()),
       kode_pekerjaan: 'pensiunan',
-      pekerjaan: 'Pensiunan',
-    };
-
-    const walis_domicile = {
-      alamat: 'Jl. Gandaria I No.10',
-      kode_kecamatan: '317405',
-      kode_kelurahan: this.getRandomKelurahan('code'),
-      kode_kota: '3174',
-      kode_pos: '12140',
-      kode_provinsi: '31',
-      nama_kecamatan: 'Kebayoran Baru',
-      nama_kelurahan: this.getRandomKelurahan('name'),
-      nama_kota: 'Jakarta Selatan',
-      nama_provinsi: 'DKI Jakarta',
-      negara: 'Indonesia',
-      rt: '003',
-      rw: '005',
     };
 
     for (const payload of payloads) {
-      const traceId = payload.trace_id;
       const payloadWithWalis = {
-        program: payload.program,
-        channel: payload.channel,
-        trace_id: payload.trace_id,
-        data: {
+        "program": payload.program,
+        "data": {
           ...payload.data,
-          wali: {
+          "wali": {
             ...walis,
           },
-          domisili_wali: {
-            ...walis_domicile,
+          "domisili_wali": {
+            ...payload.data.domisili_pasien,
           },
         },
       };
@@ -209,7 +165,12 @@ export class PeIkGeneratorController {
             this.http.post<EncryptionApiResponse<EncryptedPayload>>(
               targetUrl,
               dto.isHaveWalis ? payloadWithWalis : payload,
-              { headers: { 'Content-Type': 'application/json' } },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Basic c2l0YkBrZW1rZXM6c2l0YkBwZS1pa0BrZW1rZXM='
+                },
+              },
             ),
           );
         const encryptedData: EncryptedPayload = response.data.data;
@@ -227,7 +188,7 @@ export class PeIkGeneratorController {
             {
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic Y2xpZW50MTpzM2NyM3Q=',
+                Authorization: 'Basic c2l0YkBrZW1rZXM6c2l0YkBwZS1pa0BrZW1rZXM=',
               },
             },
           ),
@@ -237,15 +198,16 @@ export class PeIkGeneratorController {
           status: submitResponse.data,
           payload: encryptedData,
         });
-        console.log(`📤 Submitted encrypted payload trace_id=${traceId}`);
+        console.log(`📤 Success to register patient`);
       } catch (error: unknown) {
         if (isAxiosError(error)) {
           console.error(
-            `❌ Error sending payload trace_id=${traceId}`,
+            `❌ Error to register patient isAxios`,
             error.response?.data ?? error.message,
+            payload,
           );
         } else {
-          console.error(`❌ Error sending payload trace_id=${traceId}`, error);
+          console.error(`❌ Error to register patient`, error);
         }
       }
     }
@@ -253,3 +215,10 @@ export class PeIkGeneratorController {
     return { count: sentResponses.length, sent: sentResponses };
   }
 }
+
+// basic auth
+// satu sehat: c2F0dXNlaGF0QGtlbWtlczpzYXR1c2VoYXRAcGUtaWtAa2Vta2Vz
+// ckg: Y2tnQGtlbWtlczpja2dAcGUtaWtAa2Vta2Vz
+// siha: c2loYUBrZW1rZXM6c2loYUBwZS1pa0BrZW1rZXM=
+// sitb: c2l0YkBrZW1rZXM6c2l0YkBwZS1pa0BrZW1rZXM=
+// sismal: c2lzbWFsQGtlbWtlczpzaXNtYWxAcGUtaWtAa2Vta2Vz
